@@ -4,30 +4,35 @@ using System.Diagnostics.Tracing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public enum TileType
+[System.Serializable]
+public class TilesType
 {
-    None
-};
+    public string typeName;
+    public Tile tileToRepresend;
+}
 
 [System.Serializable]
-public class TileSettings
+public class TileRuls
 {
-    public Tile tileType;
-    [Space(3)]
-    public TileType tileType_TopLeft;
-    public TileType tileType_TopRight;
-    public TileType tileType_BottomLeft;
-    public TileType tileType_BottomRight;
-    [Space(3)]
-    public bool isAnimate;
-    public bool isRandomTile;
+    public Tile tile;
+    [Space(5)]
+    public string tileType_TopLeft;
+    public string tileType_TopRight;
+    public string tileType_BottomLeft;
+    public string tileType_BottomRight;
+    [Space(5)]
+    public bool isAnimated;
+    public bool isRandom;
 }
 
 public class DualGridTilemap : MonoBehaviour
 {
     [SerializeField] private Tilemap invisibleTilemap;
     [Space(5)]
-    [SerializeField] private List<TileSettings> tileSettings = new List<TileSettings>();
+    [SerializeField] public List<TilesType> tileTypes;
+    [Space(5)]
+    [SerializeField] private List<TileRuls> tileRuls;
+
 
     void Start()
     {
@@ -70,6 +75,7 @@ public class DualGridTilemap : MonoBehaviour
 
     private void OnDrawGizmos()
     {
+        if (invisibleTilemap == null) return;
         BoundsInt tilemapBorders = invisibleTilemap.cellBounds;
         Vector2 positionOfFirstCell = new Vector2(tilemapBorders.xMin, tilemapBorders.yMin);
 
