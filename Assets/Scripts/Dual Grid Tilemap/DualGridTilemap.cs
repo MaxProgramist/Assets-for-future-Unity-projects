@@ -18,6 +18,15 @@ public class TypesOfNeighboringTiles
     public string tileType_TopRight;
     public string tileType_BottomLeft;
     public string tileType_BottomRight;
+
+    public bool Equals(TypesOfNeighboringTiles other)
+    {
+        return other != null &&
+            tileType_TopLeft == other.tileType_TopLeft &&
+            tileType_TopRight == other.tileType_TopRight &&
+            tileType_BottomLeft == other.tileType_BottomLeft &&
+            tileType_BottomRight == other.tileType_BottomRight;
+    }
 }
 
 [System.Serializable]
@@ -34,8 +43,6 @@ public class TileRuls
     [Space(5)]
     public TypesOfNeighboringTiles typesOfNeighboring;
     [Space(5)]
-    public bool isRandom;
-    public int countOfVariants;
     public List<RandomTileSettings> randomTileSettings;
 }
 
@@ -47,9 +54,16 @@ public class DualGridTilemap : MonoBehaviour
     [Space(5)]
     [SerializeField] private List<TileRuls> tileRuls;
 
+    Dictionary<Tile, string> dictionaryOfTilesName = new Dictionary<Tile, string>();
 
     void Start()
     {
+        for (int indexOfTileType = 0; indexOfTileType < tileTypes.Count; indexOfTileType++)
+        {
+            if (tileTypes[indexOfTileType].tileToRepresend != null)
+                dictionaryOfTilesName.Add(tileTypes[indexOfTileType].tileToRepresend, tileTypes[indexOfTileType].typeName);
+        }
+
         DrawVisibleMap();
     }
 
@@ -62,14 +76,49 @@ public class DualGridTilemap : MonoBehaviour
         BoundsInt tilemapBorders = invisibleTilemap.cellBounds;
         Vector3Int tilemapSize = tilemapBorders.size;
 
-        for (int xOffset = 0; xOffset < tilemapSize.x; xOffset++)
+        for (int xOffset = 0; xOffset <= tilemapSize.x; xOffset++)
         {
-            for (int yOffset = 0; yOffset < tilemapSize.y; yOffset++)
+            for (int yOffset = 0; yOffset <= tilemapSize.y; yOffset++)
             {
-                Vector3Int positionOfGetTile = new Vector3Int(tilemapBorders.xMin + xOffset, tilemapBorders.yMin + yOffset);
                 Vector3Int positionOfSetTile = new Vector3Int(tilemapBorders.xMin + xOffset - 1, tilemapBorders.yMin + yOffset - 1);
-                TileBase tileToPlace = invisibleTilemap.GetTile(positionOfGetTile);
-                visibleTilemap.SetTile(positionOfSetTile, tileToPlace);
+
+                Vector3Int positionOfGetTile_TopRight = new Vector3Int(tilemapBorders.xMin + xOffset, tilemapBorders.yMin + yOffset);
+                Vector3Int positionOfGetTile_TopLeft = new Vector3Int(tilemapBorders.xMin + xOffset - 1, tilemapBorders.yMin + yOffset);
+                Vector3Int positionOfGetTile_BottomRight = new Vector3Int(tilemapBorders.xMin + xOffset, tilemapBorders.yMin + yOffset - 1);
+                Vector3Int positionOfGetTile_BottomLeft = new Vector3Int(tilemapBorders.xMin + xOffset - 1, tilemapBorders.yMin + yOffset - 1);
+
+                Tile topRightTile = invisibleTilemap.GetTile(positionOfGetTile_TopRight) as Tile;
+                Tile topLeftTile = invisibleTilemap.GetTile(positionOfGetTile_TopLeft) as Tile;
+                Tile bottomRightTile = invisibleTilemap.GetTile(positionOfGetTile_BottomRight) as Tile;
+                Tile bottomLeftTile = invisibleTilemap.GetTile(positionOfGetTile_BottomLeft) as Tile;
+
+
+                Debug.Log(topRightTile);
+                Debug.Log(topLeftTile);
+                Debug.Log(bottomRightTile);
+                Debug.Log(bottomLeftTile);
+
+
+                TypesOfNeighboringTiles typesOfNeighboringTiles = new TypesOfNeighboringTiles();
+                if (topRightTile == null) typesOfNeighboringTiles.tileType_TopRight = "None";
+                else typesOfNeighboringTiles.tileType_TopRight = dictionaryOfTilesName[topRightTile];
+
+                if (topLeftTile == null) typesOfNeighboringTiles.tileType_TopLeft = "None";
+                else typesOfNeighboringTiles.tileType_TopLeft = dictionaryOfTilesName[topLeftTile];
+
+                if (bottomRightTile == null) typesOfNeighboringTiles.tileType_BottomRight = "None";
+                else typesOfNeighboringTiles.tileType_BottomRight = dictionaryOfTilesName[bottomRightTile];
+                
+                if (bottomLeftTile == null) typesOfNeighboringTiles.tileType_BottomLeft = "None";
+                else typesOfNeighboringTiles.tileType_BottomLeft = dictionaryOfTilesName[bottomLeftTile];
+
+
+                TileRuls tileRule = tileRuls.Find(t => t.typesOfNeighboring.Equals(typesOfNeighboringTiles));
+                if (tileRule != null)
+                {
+                    Tile tileToPlace = tileRule.tile;
+                    visibleTilemap.SetTile((Vector3Int)positionOfSetTile, tileToPlace);
+                }
             }
         }
     }
