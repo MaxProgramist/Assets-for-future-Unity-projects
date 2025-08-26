@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+
 [CustomPropertyDrawer(typeof(TypesOfNeighboringTiles))] 
 public class TypesOfNeighboringTilesDrawer : PropertyDrawer 
 { 

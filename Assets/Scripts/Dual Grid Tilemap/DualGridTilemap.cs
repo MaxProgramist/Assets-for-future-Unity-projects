@@ -132,14 +132,4 @@ public class DualGridTilemap : MonoBehaviour
 
         return visibleTilemap.GetComponent<Tilemap>();
     }
-
-    private void OnDrawGizmos()
-    {
-        if (invisibleTilemap == null) return;
-        BoundsInt tilemapBorders = invisibleTilemap.cellBounds;
-        Vector2 positionOfFirstCell = new Vector2(tilemapBorders.xMin, tilemapBorders.yMin);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(positionOfFirstCell, 0.2f);
-    }
 }
