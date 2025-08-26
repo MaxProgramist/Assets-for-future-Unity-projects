@@ -60,8 +60,11 @@ public class DualGridTilemap : MonoBehaviour
     {
         for (int indexOfTileType = 0; indexOfTileType < tileTypes.Count; indexOfTileType++)
         {
-            if (tileTypes[indexOfTileType].tileToRepresend != null)
-                dictionaryOfTilesName.Add(tileTypes[indexOfTileType].tileToRepresend, tileTypes[indexOfTileType].typeName);
+            if (tileTypes[indexOfTileType].typeName == "None") continue;
+
+            if (tileTypes[indexOfTileType].tileToRepresend == null) Debug.LogError("You forget to set tile example for type: " + tileTypes[indexOfTileType].typeName);
+
+            dictionaryOfTilesName.Add(tileTypes[indexOfTileType].tileToRepresend, tileTypes[indexOfTileType].typeName);
         }
 
         DrawVisibleMap();
@@ -91,12 +94,6 @@ public class DualGridTilemap : MonoBehaviour
                 Tile topLeftTile = invisibleTilemap.GetTile(positionOfGetTile_TopLeft) as Tile;
                 Tile bottomRightTile = invisibleTilemap.GetTile(positionOfGetTile_BottomRight) as Tile;
                 Tile bottomLeftTile = invisibleTilemap.GetTile(positionOfGetTile_BottomLeft) as Tile;
-
-
-                Debug.Log(topRightTile);
-                Debug.Log(topLeftTile);
-                Debug.Log(bottomRightTile);
-                Debug.Log(bottomLeftTile);
 
 
                 TypesOfNeighboringTiles typesOfNeighboringTiles = new TypesOfNeighboringTiles();
