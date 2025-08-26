@@ -776,9 +776,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   invisibleTilemap: {fileID: 1023706356}
   tileTypes:
-  - typeName: 
+  - typeName: None
     tileToRepresend: {fileID: 0}
-  tileRuls: []
+  - typeName: Grass
+    tileToRepresend: {fileID: 11400000, guid: 2cc0ae2d099769146ab7bfb4b1919d81, type: 2}
+  tileRuls:
+  - tile: {fileID: 0}
+    typesOfNeighboring:
+      tileType_TopLeft: 
+      tileType_TopRight: 
+      tileType_BottomLeft: 
+      tileType_BottomRight: 
+    isAnimated: 0
+    isRandom: 0
 --- !u!1 &1969734246
 GameObject:
   m_ObjectHideFlags: 0

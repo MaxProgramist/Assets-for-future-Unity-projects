@@ -12,24 +12,38 @@ public class TilesType
 }
 
 [System.Serializable]
-public class TileRuls
+public class TypesOfNeighboringTiles
 {
-    public Tile tile;
-    [Space(5)]
     public string tileType_TopLeft;
     public string tileType_TopRight;
     public string tileType_BottomLeft;
     public string tileType_BottomRight;
+}
+
+[System.Serializable]
+public class RandomTileSettings
+{
+    public Tile tileToRepresend;
+    public float chanceToApear;
+}
+
+[System.Serializable]
+public class TileRuls
+{
+    public Tile tile;
     [Space(5)]
-    public bool isAnimated;
+    public TypesOfNeighboringTiles typesOfNeighboring;
+    [Space(5)]
     public bool isRandom;
+    public int countOfVariants;
+    public List<RandomTileSettings> randomTileSettings;
 }
 
 public class DualGridTilemap : MonoBehaviour
 {
     [SerializeField] private Tilemap invisibleTilemap;
     [Space(5)]
-    [SerializeField] public List<TilesType> tileTypes;
+    [SerializeField] public List<TilesType> tileTypes = new List<TilesType>(1) { new TilesType() {typeName = "None", tileToRepresend = null } };
     [Space(5)]
     [SerializeField] private List<TileRuls> tileRuls;
 
