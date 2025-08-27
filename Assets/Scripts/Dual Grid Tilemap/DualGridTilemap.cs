@@ -30,20 +30,11 @@ public class TypesOfNeighboringTiles
 }
 
 [System.Serializable]
-public class RandomTileSettings
-{
-    public Tile tileToRepresend;
-    public float chanceToApear;
-}
-
-[System.Serializable]
 public class TileRuls
 {
     public Tile tile;
     [Space(5)]
     public TypesOfNeighboringTiles typesOfNeighboring;
-    [Space(5)]
-    public List<RandomTileSettings> randomTileSettings;
 }
 
 public class DualGridTilemap : MonoBehaviour
