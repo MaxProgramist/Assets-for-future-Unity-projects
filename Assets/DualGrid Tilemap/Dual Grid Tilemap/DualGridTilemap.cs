@@ -39,13 +39,16 @@ public class TileRuls
 
 public class DualGridTilemap : MonoBehaviour
 {
-    [SerializeField] private Tilemap invisibleTilemap;
+    [SerializeField] private List<Tilemap> invisibleTilemaps;
+    [SerializeField] private GameObject gridObject;
     [Space(5)]
     [SerializeField] public List<TilesType> tileTypes = new List<TilesType>(1) { new TilesType() {typeName = "None", tileToRepresend = null } };
     [Space(5)]
     [SerializeField] private List<TileRuls> tileRuls;
 
     Dictionary<Tile, string> dictionaryOfTilesName = new Dictionary<Tile, string>();
+    Tilemap invisibleTilemap;
+    Color invisibleColor = new Color(1, 1, 1, 0);
 
     void Start()
     {
@@ -61,9 +64,15 @@ public class DualGridTilemap : MonoBehaviour
         DrawVisibleMap();
     }
 
-    public void DrawVisibleMap()
+    public Tilemap DrawVisibleMap()
     {
-        invisibleTilemap.color = new Color(1, 1, 1, 0);
+        GameObject objectForInvisibleTilemap = new GameObject();
+        objectForInvisibleTilemap.AddComponent<Tilemap>();
+        invisibleTilemap = objectForInvisibleTilemap.GetComponent<Tilemap>();
+
+        CopyTilemap();
+
+        invisibleTilemap.color = invisibleColor;
 
         Tilemap visibleTilemap = VisibleTilemap();
 
@@ -109,6 +118,10 @@ public class DualGridTilemap : MonoBehaviour
                 }
             }
         }
+
+        Destroy(objectForInvisibleTilemap);
+
+        return visibleTilemap;
     }
 
     Tilemap VisibleTilemap()
@@ -119,8 +132,29 @@ public class DualGridTilemap : MonoBehaviour
         visibleTilemap.AddComponent<TilemapRenderer>();
 
         visibleTilemap.transform.position = new Vector3(0.5f, 0.5f);
-        visibleTilemap.transform.parent = invisibleTilemap.transform.parent;
+        visibleTilemap.transform.parent = gridObject.transform;
 
         return visibleTilemap.GetComponent<Tilemap>();
+    }
+
+    void CopyTilemap()
+    {
+        foreach (Tilemap currentTilemap in invisibleTilemaps)
+        {
+            currentTilemap.color = invisibleColor;
+            BoundsInt tilemapBorders = currentTilemap.cellBounds;
+            int startX = tilemapBorders.xMin, startY = tilemapBorders.yMin;
+            int endX = tilemapBorders.xMax, endY = tilemapBorders.yMax;
+            for (int currentX = startX; currentX < endX; currentX++)
+            {
+                for (int currentY = startY; currentY < endY; currentY++)
+                {
+                    Vector3Int currentPos = new Vector3Int(currentX, currentY);
+                    Tile currentTile = currentTilemap.GetTile(currentPos) as Tile;
+                    if (currentTile != null)
+                        invisibleTilemap.SetTile(currentPos, currentTile);
+                }
+            }
+        }
     }
 }
