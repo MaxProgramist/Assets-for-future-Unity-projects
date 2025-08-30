@@ -11,6 +11,8 @@ public class Shakingtext : MonoBehaviour
     TMP_Text textMesh;
     List<Vector3[]> originalVertices = new List<Vector3[]>();
 
+    float currentTimeBtwFrames = 0;
+
     void Start()
     {
         textMesh = GetComponent<TMP_Text>();
@@ -28,6 +30,11 @@ public class Shakingtext : MonoBehaviour
 
     void Update()
     {
+        if (currentTimeBtwFrames < timeBtwFrames) {
+            currentTimeBtwFrames += Time.deltaTime;
+            return;
+        }
+
         textMesh.ForceMeshUpdate();
         TMP_TextInfo textInfo = textMesh.textInfo;
 
@@ -55,5 +62,7 @@ public class Shakingtext : MonoBehaviour
             meshInfo.mesh.vertices = meshInfo.vertices;
             textMesh.UpdateGeometry(meshInfo.mesh, i);
         }
+
+        currentTimeBtwFrames = 0;
     }
 }
