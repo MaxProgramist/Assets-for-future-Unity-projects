@@ -270,21 +270,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effects:
-  - {fileID: 352171205}
-  - {fileID: 1591167358}
---- !u!114 &352171205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6076c9588ed6ed5468719f4bf1a6aa81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxOffset: 5
+  - {fileID: 11400000, guid: 5a477d7152d0e0e449348e2a179d3c36, type: 2}
+  - {fileID: 11400000, guid: 78ec79151c5707c45b73775ad5294afa, type: 2}
 --- !u!1 &685040280
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,21 +477,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!114 &1591167358
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 371f1a92105297d4984b618ae23137f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  frequency: 5
-  amplitude: 5
-  spreading: 1
 --- !u!1 &1775271205
 GameObject:
   m_ObjectHideFlags: 0

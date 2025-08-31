@@ -10,6 +10,8 @@ public class WavingEffect : TextEffect
     [SerializeField] private float frequency = 5;
     [SerializeField] private float amplitude = 5;
     [SerializeField] private float spreading = 1;
+    [Space(5)]
+    [SerializeField] private float startOffset = 0;
 
     public override string startTag => "<wav>";
     public override string endTag => "</wav>";
@@ -29,7 +31,7 @@ public class WavingEffect : TextEffect
 
             Vector3[] vertices = textInfo.meshInfo[meshIndex].vertices;
 
-            float offset = Mathf.Sin(Time.time * frequency + i * spreading) * amplitude;
+            float offset = Mathf.Sin(Time.time * frequency + i * spreading + startOffset) * amplitude;
 
             vertices[vertexIndex + 0] += new Vector3(0, offset, 0);
             vertices[vertexIndex + 1] += new Vector3(0, offset, 0);

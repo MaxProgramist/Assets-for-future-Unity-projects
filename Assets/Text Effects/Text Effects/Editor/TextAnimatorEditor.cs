@@ -20,25 +20,21 @@ public class TextAnimatorEditor : Editor
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Effects Manager", EditorStyles.boldLabel);
 
-        if (GUILayout.Button("➕ Add Effect"))
+        if (GUILayout.Button("+ Add Effect"))
         {
             GenericMenu menu = new GenericMenu();
 
-            var effectTypes = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a => a.GetTypes())
-                .Where(t => typeof(TextEffect).IsAssignableFrom(t) && !t.IsAbstract);
-
-            foreach (var type in effectTypes)
+            string[] guids = AssetDatabase.FindAssets("t:TextEffect");
+            foreach (string guid in guids)
             {
-                if (animator.GetEffects().Any(e => e != null && e.GetType() == type))
-                    continue;
+                string path = AssetDatabase.GUIDToAssetPath(guid);
+                TextEffect asset = AssetDatabase.LoadAssetAtPath<TextEffect>(path);
 
-                menu.AddItem(new GUIContent(type.Name), false, () =>
+                if (animator.GetEffects().Contains(asset)) continue;
+
+                menu.AddItem(new GUIContent(asset.name), false, () =>
                 {
-                    TextEffect newEffect = CreateInstance(type) as TextEffect;
-                    animator.GetEffects().Add(newEffect);
-
-                    Undo.RegisterCreatedObjectUndo(newEffect, "Add Effect");
+                    animator.GetEffects().Add(asset);
                     EditorUtility.SetDirty(animator);
                 });
             }
@@ -58,14 +54,15 @@ public class TextAnimatorEditor : Editor
                 GUIStyle bigLabel = new GUIStyle(EditorStyles.boldLabel);
                 bigLabel.fontSize = 12;
 
-                if (animator.GetEffects()[i] != null)
-                    EditorGUILayout.LabelField(animator.GetEffects()[i].GetType().Name, bigLabel);
+                var effect = animator.GetEffects()[i];
+                if (effect != null)
+                    EditorGUILayout.LabelField(effect.name, bigLabel);
                 else
                     EditorGUILayout.LabelField("Missing Effect", bigLabel);
 
+
                 if (GUILayout.Button("X", GUILayout.Width(30)))
                 {
-                    Undo.DestroyObjectImmediate(animator.GetEffects()[i]);
                     animator.GetEffects().RemoveAt(i);
                     EditorUtility.SetDirty(animator);
                 }

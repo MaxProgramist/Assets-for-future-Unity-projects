@@ -9,11 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 371f1a92105297d4984b618ae23137f2, type: 3}
-  m_Name: Waving text
+  m_Script: {fileID: 11500000, guid: 6076c9588ed6ed5468719f4bf1a6aa81, type: 3}
+  m_Name: Shaking effect
   m_EditorClassIdentifier: 
-  StartTag: <wav>
-  EndTag: </wav>
-  frequency: 5
-  amplitude: 5
-  spreading: 1
+  maxOffset: 5
