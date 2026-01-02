@@ -1019,91 +1019,95 @@ MonoBehaviour:
   - typeName: Grass
     tileToRepresend: {fileID: 11400000, guid: 2cc0ae2d099769146ab7bfb4b1919d81, type: 2}
   tileRuls:
-  - tile: {fileID: 11400000, guid: 2cc0ae2d099769146ab7bfb4b1919d81, type: 2}
+  - tiles:
+    - tile: {fileID: 11400000, guid: 2cc0ae2d099769146ab7bfb4b1919d81, type: 2}
+      chance: 50
+    - tile: {fileID: 11400000, guid: 7ebed736a2168f2458f9a70a19385c19, type: 2}
+      chance: 50
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: Grass
       tileType_BottomLeft: Grass
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: d63c0c46fc1c6674cbb3d7a5040d1b6b, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: Grass
       tileType_BottomLeft: None
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: c4dd7f202d46752429bc9c2424dbd8b4, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: Grass
       tileType_BottomLeft: Grass
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: 7b867131ca55dc44091fe647d9d238c3, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: None
       tileType_BottomLeft: Grass
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: 8d9b484ad636cfd4dae086470595e93f, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: Grass
       tileType_BottomLeft: Grass
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: 52326b496c7d7a243a3f598aa1a20e4a, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: None
       tileType_BottomLeft: Grass
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: d418a66b79214e84983e03e74e41d01b, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: Grass
       tileType_BottomLeft: None
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: 37c3e1e1c99d247409d91e74628e8643, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: Grass
       tileType_BottomLeft: None
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: bebd8d75c5af58d48b3d61ffdc92b560, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: None
       tileType_BottomLeft: Grass
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: 2b600a9643623de49bb22bb5dada698a, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: None
       tileType_BottomLeft: None
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: 1aeec562d7ed9b249b7f145a07718859, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: Grass
       tileType_BottomLeft: None
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: c765510d421fa1440b11c72e573c1756, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: None
       tileType_BottomLeft: None
       tileType_BottomRight: Grass
-  - tile: {fileID: 11400000, guid: 4fe2b2d5ed489434cb6c0e18375bab61, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: None
       tileType_BottomLeft: Grass
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: 4e48e322fe3c1344d9203b565fa3d833, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: None
       tileType_TopRight: Grass
       tileType_BottomLeft: Grass
       tileType_BottomRight: None
-  - tile: {fileID: 11400000, guid: a379f8330e26e964080b5958985a7589, type: 2}
+  - tiles: []
     typesOfNeighboring:
       tileType_TopLeft: Grass
       tileType_TopRight: None

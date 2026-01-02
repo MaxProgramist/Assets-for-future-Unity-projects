@@ -1,8 +1,10 @@
+//using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public class TilesType
@@ -30,9 +32,16 @@ public class TypesOfNeighboringTiles
 }
 
 [System.Serializable]
-public class TileRuls
+public class RandomTile
 {
     public Tile tile;
+    public float chance;
+}
+
+[System.Serializable]
+public class TileRuls
+{
+    public List<RandomTile> tiles = new List<RandomTile>();
     [Space(5)]
     public TypesOfNeighboringTiles typesOfNeighboring;
 }
@@ -52,6 +61,19 @@ public class DualGridTilemap : MonoBehaviour
 
     void Start()
     {
+        float chanceOffset = 0;
+
+        foreach (TileRuls currentTilesRule in tileRuls) 
+        {
+            chanceOffset = 0;
+            foreach (RandomTile currentTile in currentTilesRule.tiles)
+            {
+                currentTile.chance /= 100f;
+                chanceOffset += currentTile.chance;
+                currentTile.chance = chanceOffset;
+            }
+        }
+
         for (int indexOfTileType = 0; indexOfTileType < tileTypes.Count; indexOfTileType++)
         {
             if (tileTypes[indexOfTileType].typeName == "None") continue;
@@ -110,10 +132,24 @@ public class DualGridTilemap : MonoBehaviour
                 else typesOfNeighboringTiles.tileType_BottomLeft = dictionaryOfTilesName[bottomLeftTile];
 
 
-                TileRuls tileRule = tileRuls.Find(t => t.typesOfNeighboring.Equals(typesOfNeighboringTiles));
-                if (tileRule != null)
+                TileRuls tileRules = tileRuls.Find(t => t.typesOfNeighboring.Equals(typesOfNeighboringTiles));
+                if (tileRules != null)
                 {
-                    Tile tileToPlace = tileRule.tile;
+                    float randomTileChance = Random.value;
+
+                    Tile tileToPlace = null;
+
+                    Debug.Log(randomTileChance);
+
+                    foreach (RandomTile currentTile in tileRules.tiles)
+                    {
+                        if (currentTile.chance >= randomTileChance)
+                        {
+                            tileToPlace = currentTile.tile;
+                            break;
+                        }
+                    }
+
                     visibleTilemap.SetTile((Vector3Int)positionOfSetTile, tileToPlace);
                 }
             }
