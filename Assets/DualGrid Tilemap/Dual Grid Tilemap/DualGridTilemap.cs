@@ -1,34 +1,17 @@
-//using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
+using UnityEditor;
+using JetBrains.Annotations;
+using System.Data;
 
 [System.Serializable]
-public class TilesType
+public class TypeOfTiles
 {
-    public string typeName;
-    public Tile tileToRepresend;
-}
-
-[System.Serializable]
-public class TypesOfNeighboringTiles
-{
-    public string tileType_TopLeft;
-    public string tileType_TopRight;
-    public string tileType_BottomLeft;
-    public string tileType_BottomRight;
-
-    public bool Equals(TypesOfNeighboringTiles other)
-    {
-        return other != null &&
-            tileType_TopLeft == other.tileType_TopLeft &&
-            tileType_TopRight == other.tileType_TopRight &&
-            tileType_BottomLeft == other.tileType_BottomLeft &&
-            tileType_BottomRight == other.tileType_BottomRight;
-    }
+    public string tileName = "None";
+    public Tile tileToRepresend = null;
 }
 
 [System.Serializable]
@@ -39,158 +22,183 @@ public class RandomTile
 }
 
 [System.Serializable]
-public class TileRuls
+public class TileRule
 {
-    public List<RandomTile> tiles = new List<RandomTile>();
-    [Space(5)]
-    public TypesOfNeighboringTiles typesOfNeighboring;
+    public string topLeftTile;
+    public string topRightTile;
+    public string bottomLeftTile;
+    public string bottomRightTile;
+
+    public bool Equals(TileRule other)
+    {
+        if (other == null)
+            return false;
+
+        return
+            topLeftTile == other.topLeftTile &&
+            topRightTile == other.topRightTile &&
+            bottomLeftTile == other.bottomLeftTile &&
+            bottomRightTile == other.bottomRightTile;
+    }
+
+    public override bool Equals(object obj)
+    {
+        return Equals(obj as TileRule);
+    }
+
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = 17;
+            hash = hash * 23 + (topLeftTile != null ? topLeftTile.GetHashCode() : 0);
+            hash = hash * 23 + (topRightTile != null ? topRightTile.GetHashCode() : 0);
+            hash = hash * 23 + (bottomLeftTile != null ? bottomLeftTile.GetHashCode() : 0);
+            hash = hash * 23 + (bottomRightTile != null ? bottomRightTile.GetHashCode() : 0);
+            return hash;
+        }
+    }
 }
 
+[System.Serializable]
+public class TilesToRule
+{
+    public List<RandomTile> randomTiles = new List<RandomTile>();
+    [Space(5)]
+    public TileRule tileRule;
+}
+
+[ExecuteInEditMode]
 public class DualGridTilemap : MonoBehaviour
 {
-    [SerializeField] private List<Tilemap> invisibleTilemaps;
-    [SerializeField] private GameObject gridObject;
-    [Space(5)]
-    [SerializeField] public List<TilesType> tileTypes = new List<TilesType>(1) { new TilesType() {typeName = "None", tileToRepresend = null } };
-    [Space(5)]
-    [SerializeField] private List<TileRuls> tileRuls;
+    [Header("Tilemaps")]
+    [SerializeField] private Tilemap invisibleTilemaps;
+    [SerializeField] private Tilemap visibleTilemap;
 
-    Dictionary<Tile, string> dictionaryOfTilesName = new Dictionary<Tile, string>();
-    Tilemap invisibleTilemap;
-    Color invisibleColor = new Color(1, 1, 1, 0);
+    [Header("Type of tiles")]
+    [SerializeField] private List<TypeOfTiles> typeOfTiles = new List<TypeOfTiles>();
 
-    void Start()
+    [Header("Rules for tiles")]
+    [SerializeField] private List<TilesToRule> tilesToRule = new List<TilesToRule>();
+
+    Dictionary<Tile, string> tileNameDictionary = new Dictionary<Tile, string>();
+    Dictionary<TileRule, List<RandomTile>> tileToRule = new Dictionary<TileRule, List<RandomTile>>();
+
+    private void Awake()
     {
-        float chanceOffset = 0;
-
-        foreach (TileRuls currentTilesRule in tileRuls) 
-        {
-            chanceOffset = 0;
-            foreach (RandomTile currentTile in currentTilesRule.tiles)
-            {
-                currentTile.chance /= 100f;
-                chanceOffset += currentTile.chance;
-                currentTile.chance = chanceOffset;
-            }
-        }
-
-        for (int indexOfTileType = 0; indexOfTileType < tileTypes.Count; indexOfTileType++)
-        {
-            if (tileTypes[indexOfTileType].typeName == "None") continue;
-
-            if (tileTypes[indexOfTileType].tileToRepresend == null) Debug.LogError("You forget to set tile example for type: " + tileTypes[indexOfTileType].typeName);
-
-            dictionaryOfTilesName.Add(tileTypes[indexOfTileType].tileToRepresend, tileTypes[indexOfTileType].typeName);
-        }
-
-        DrawVisibleMap();
+        invisibleTilemaps.color = new Color(1,1,1,0);
     }
 
-    public Tilemap DrawVisibleMap()
+    private void OnValidate()
     {
-        GameObject objectForInvisibleTilemap = new GameObject();
-        objectForInvisibleTilemap.AddComponent<Tilemap>();
-        invisibleTilemap = objectForInvisibleTilemap.GetComponent<Tilemap>();
+        tileNameDictionary = new Dictionary<Tile, string>();
+        tileToRule = new Dictionary<TileRule, List<RandomTile>>();
 
-        CopyTilemap();
+        foreach (TypeOfTiles currentType in typeOfTiles)
+            if (currentType.tileToRepresend != null && !tileNameDictionary.ContainsKey(currentType.tileToRepresend))
+                tileNameDictionary.Add(currentType.tileToRepresend, currentType.tileName);
 
-        invisibleTilemap.color = invisibleColor;
-
-        Tilemap visibleTilemap = VisibleTilemap();
-
-        BoundsInt tilemapBorders = invisibleTilemap.cellBounds;
-        Vector3Int tilemapSize = tilemapBorders.size;
-
-        for (int xOffset = 0; xOffset <= tilemapSize.x; xOffset++)
-        {
-            for (int yOffset = 0; yOffset <= tilemapSize.y; yOffset++)
-            {
-                Vector3Int positionOfSetTile = new Vector3Int(tilemapBorders.xMin + xOffset - 1, tilemapBorders.yMin + yOffset - 1);
-
-                Vector3Int positionOfGetTile_TopRight = new Vector3Int(tilemapBorders.xMin + xOffset, tilemapBorders.yMin + yOffset);
-                Vector3Int positionOfGetTile_TopLeft = new Vector3Int(tilemapBorders.xMin + xOffset - 1, tilemapBorders.yMin + yOffset);
-                Vector3Int positionOfGetTile_BottomRight = new Vector3Int(tilemapBorders.xMin + xOffset, tilemapBorders.yMin + yOffset - 1);
-                Vector3Int positionOfGetTile_BottomLeft = new Vector3Int(tilemapBorders.xMin + xOffset - 1, tilemapBorders.yMin + yOffset - 1);
-
-                Tile topRightTile = invisibleTilemap.GetTile(positionOfGetTile_TopRight) as Tile;
-                Tile topLeftTile = invisibleTilemap.GetTile(positionOfGetTile_TopLeft) as Tile;
-                Tile bottomRightTile = invisibleTilemap.GetTile(positionOfGetTile_BottomRight) as Tile;
-                Tile bottomLeftTile = invisibleTilemap.GetTile(positionOfGetTile_BottomLeft) as Tile;
-
-
-                TypesOfNeighboringTiles typesOfNeighboringTiles = new TypesOfNeighboringTiles();
-                if (topRightTile == null) typesOfNeighboringTiles.tileType_TopRight = "None";
-                else typesOfNeighboringTiles.tileType_TopRight = dictionaryOfTilesName[topRightTile];
-
-                if (topLeftTile == null) typesOfNeighboringTiles.tileType_TopLeft = "None";
-                else typesOfNeighboringTiles.tileType_TopLeft = dictionaryOfTilesName[topLeftTile];
-
-                if (bottomRightTile == null) typesOfNeighboringTiles.tileType_BottomRight = "None";
-                else typesOfNeighboringTiles.tileType_BottomRight = dictionaryOfTilesName[bottomRightTile];
-                
-                if (bottomLeftTile == null) typesOfNeighboringTiles.tileType_BottomLeft = "None";
-                else typesOfNeighboringTiles.tileType_BottomLeft = dictionaryOfTilesName[bottomLeftTile];
-
-
-                TileRuls tileRules = tileRuls.Find(t => t.typesOfNeighboring.Equals(typesOfNeighboringTiles));
-                if (tileRules != null)
-                {
-                    float randomTileChance = Random.value;
-
-                    Tile tileToPlace = null;
-
-                    Debug.Log(randomTileChance);
-
-                    foreach (RandomTile currentTile in tileRules.tiles)
-                    {
-                        if (currentTile.chance >= randomTileChance)
-                        {
-                            tileToPlace = currentTile.tile;
-                            break;
-                        }
-                    }
-
-                    visibleTilemap.SetTile((Vector3Int)positionOfSetTile, tileToPlace);
-                }
-            }
-        }
-
-        Destroy(objectForInvisibleTilemap);
-
-        return visibleTilemap;
+        foreach (TilesToRule currentRule in tilesToRule)
+            if (currentRule.randomTiles.Count > 0 && !tileToRule.ContainsKey(currentRule.tileRule))
+                tileToRule.Add(currentRule.tileRule, currentRule.randomTiles);
     }
 
-    Tilemap VisibleTilemap()
+    private void OnEnable()
     {
-        GameObject visibleTilemap = new GameObject();
-        visibleTilemap.name = "Visible Tilemap";
-        visibleTilemap.AddComponent<Tilemap>();
-        visibleTilemap.AddComponent<TilemapRenderer>();
-
-        visibleTilemap.transform.position = new Vector3(0.5f, 0.5f);
-        visibleTilemap.transform.parent = gridObject.transform;
-
-        return visibleTilemap.GetComponent<Tilemap>();
+        if (invisibleTilemaps != null)
+            Tilemap.tilemapTileChanged += OnTilemapTileChanged;
     }
 
-    void CopyTilemap()
+    private void OnDisable()
     {
-        foreach (Tilemap currentTilemap in invisibleTilemaps)
+        if (invisibleTilemaps != null)
+            Tilemap.tilemapTileChanged -= OnTilemapTileChanged;
+    }
+
+    private void OnTilemapTileChanged(Tilemap changedTilemap, Tilemap.SyncTile[] syncTiles)
+    {
+        if (changedTilemap != invisibleTilemaps)
+            return;
+
+        foreach (Tilemap.SyncTile syncTile in syncTiles)
         {
-            currentTilemap.color = invisibleColor;
-            BoundsInt tilemapBorders = currentTilemap.cellBounds;
-            int startX = tilemapBorders.xMin, startY = tilemapBorders.yMin;
-            int endX = tilemapBorders.xMax, endY = tilemapBorders.yMax;
-            for (int currentX = startX; currentX < endX; currentX++)
-            {
-                for (int currentY = startY; currentY < endY; currentY++)
-                {
-                    Vector3Int currentPos = new Vector3Int(currentX, currentY);
-                    Tile currentTile = currentTilemap.GetTile(currentPos) as Tile;
-                    if (currentTile != null)
-                        invisibleTilemap.SetTile(currentPos, currentTile);
-                }
-            }
+            Vector3Int position = syncTile.position;
+            TileBase newTile = syncTile.tile;
+
+            SetTileWithRule(position);
+            SetTileWithRule(position + new Vector3Int(0, -1, 0));
+            SetTileWithRule(position + new Vector3Int(-1, -1, 0));
+            SetTileWithRule(position + new Vector3Int(-1, 0, 0));
         }
+    }
+
+    private void SetTileWithRule(Vector3Int position)
+    {
+        TileRule currentRule = new TileRule();
+        if (invisibleTilemaps.GetTile<Tile>(position + new Vector3Int(0, 1, 0)) == null) currentRule.topLeftTile = "Null";
+        else tileNameDictionary.TryGetValue(invisibleTilemaps.GetTile<Tile>(position + new Vector3Int(0, 1, 0)), out currentRule.topLeftTile);
+
+        if (invisibleTilemaps.GetTile<Tile>(position + new Vector3Int(1, 1, 0)) == null) currentRule.topRightTile = "Null";
+        else tileNameDictionary.TryGetValue(invisibleTilemaps.GetTile<Tile>(position + new Vector3Int(1, 1, 0)), out currentRule.topRightTile);
+
+        if (invisibleTilemaps.GetTile<Tile>(position) == null) currentRule.bottomLeftTile = "Null";
+        else tileNameDictionary.TryGetValue(invisibleTilemaps.GetTile<Tile>(position), out currentRule.bottomLeftTile);
+
+        if (invisibleTilemaps.GetTile<Tile>(position + new Vector3Int(1, 0, 0)) == null) currentRule.bottomRightTile = "Null";
+        else tileNameDictionary.TryGetValue(invisibleTilemaps.GetTile<Tile>(position + new Vector3Int(1, 0, 0)), out currentRule.bottomRightTile);
+
+        List<RandomTile> posibleRandomTiles;
+        tileToRule.TryGetValue(currentRule, out posibleRandomTiles);
+
+        if (posibleRandomTiles == null)
+            visibleTilemap.SetTile(position, null);
+        else
+        {
+            Tile tileToSet = GetRandomTile(posibleRandomTiles);
+            visibleTilemap.SetTile(position, tileToSet);
+        }
+    }
+
+    private Tile GetRandomTile(List<RandomTile> tiles)
+    {
+        if (tiles == null || tiles.Count == 0)
+            return null;
+
+        float totalChance = 0f;
+        foreach (var rt in tiles)
+            totalChance += rt.chance;
+
+        if (totalChance <= 0f)
+            return tiles[0].tile;
+
+        float rand = UnityEngine.Random.Range(0f, totalChance);
+
+        float cumulative = 0f;
+        foreach (var rt in tiles)
+        {
+            cumulative += rt.chance;
+            if (rand <= cumulative)
+                return rt.tile;
+        }
+
+        return tiles[tiles.Count - 1].tile;
+    }
+
+
+
+    public List<TypeOfTiles> GetTypeOfTiles()
+    {
+        return typeOfTiles;
+    }
+    public Tile GetTileByName(string name)
+    {
+        if (name == "Null")
+            return null;
+
+        foreach (TypeOfTiles t in typeOfTiles)
+            if (t.tileName == name)
+                return t.tileToRepresend;
+
+        return null;
     }
 }
