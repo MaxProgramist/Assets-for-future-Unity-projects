@@ -91,6 +91,19 @@ public class DualGridTilemap : MonoBehaviour
 
     private void OnValidate()
     {
+        if (invisibleTilemaps == null)
+        {
+            Debug.LogError("Add invisible tilemap");
+            return;
+        }
+        else if (visibleTilemap == null)
+        {
+            Debug.LogError("Add visible tilemap");
+            return;
+        }
+
+        invisibleTilemaps.color = new Color(1, 1, 1, 0.25f);
+
         tileNameDictionary = new Dictionary<Tile, string>();
         tileToRule = new Dictionary<TileRule, List<RandomTile>>();
 

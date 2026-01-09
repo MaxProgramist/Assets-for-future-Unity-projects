@@ -73,9 +73,8 @@ public class TileRuleDrawer : PropertyDrawer
             Texture2D tex = sprite.texture;
             Rect texCoords = sprite.textureRect;
 
-            // Зберігаємо пропорції
             float spriteAspect = texCoords.width / texCoords.height;
-            float cellAspect = rect.width / (rect.height - 20); // враховуємо місце під назву
+            float cellAspect = rect.width / (rect.height - 20);
 
             float drawWidth, drawHeight;
             if (spriteAspect > cellAspect)
@@ -89,7 +88,6 @@ public class TileRuleDrawer : PropertyDrawer
                 drawWidth = drawHeight * spriteAspect;
             }
 
-            // Центруємо спрайт в клітинці
             Rect iconRect = new Rect(
                 rect.x + (rect.width - drawWidth) / 2,
                 rect.y + (rect.height - 20 - drawHeight) / 2,
@@ -109,11 +107,9 @@ public class TileRuleDrawer : PropertyDrawer
             );
         }
 
-        // Підпис тайлу
         Rect labelRect = new Rect(rect.x, rect.yMax - 20, rect.width, 18);
         EditorGUI.LabelField(labelRect, tileName, EditorStyles.centeredGreyMiniLabel);
 
-        // Кнопка для меню
         if (GUI.Button(rect, GUIContent.none, GUIStyle.none))
         {
             GenericMenu menu = new GenericMenu();
