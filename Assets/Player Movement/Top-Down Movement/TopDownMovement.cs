@@ -23,8 +23,8 @@ public class TopDownMovement : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private float movementMaxSpeed;
-    [SerializeField] private float movementAcceleration;
-    [SerializeField] private float movementDeceleration;
+    [SerializeField][Range(0, 20)] private float movementAcceleration;
+    [SerializeField][Range(0, 20)] private float movementDeceleration;
     [Space(8)]
     [SerializeField] private MovementDirections movementDirections;
 

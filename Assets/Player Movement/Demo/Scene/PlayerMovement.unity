@@ -1067,16 +1067,16 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558737259}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: edc4dfaf19fed2c46b2010b2555ca53b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movementType: 1
   movementMaxSpeed: 6
-  movementAcceleration: 40
-  movementDeceleration: 60
-  movementDirections: 0
+  movementAcceleration: 15
+  movementDeceleration: 19
+  movementDirections: 3
   lenghtOfStep: 1
   timeBtwSteps: 0.2
   movementAnimationCurve:
@@ -1142,14 +1142,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1558737259}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3fff25e6565a2b04eb56370b619e8249, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMovementSpeed: 3
-  groundAcceleration: 20
-  airAcceleration: 5
+  maxMovementSpeed: 4.5
+  groundAcceleration: 13
+  airAcceleration: 9.1
   jumpForce: 6
   jumpGravityForce: 0.75
   fallGravityForce: 1.2

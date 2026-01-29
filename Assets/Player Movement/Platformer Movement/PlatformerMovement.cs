@@ -7,8 +7,8 @@ public class PlatformerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float maxMovementSpeed;
     [Space(5)]
-    [SerializeField] private float groundAcceleration;
-    [SerializeField] private float airAcceleration;
+    [SerializeField][Range(0, 20)] private float groundAcceleration;
+    [SerializeField][Range(0, 20)] private float airAcceleration;
 
     [Header("Jump")]
     [SerializeField] private float jumpForce;
